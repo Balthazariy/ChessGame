@@ -1,0 +1,34 @@
+{
+  "Units": [
+    {
+      "name": "Pawn",
+      "damage": 2,
+      "health": 6,
+      "moveDistance": 1
+    },
+    {
+      "name": "Knight",
+      "damage": 3,
+      "health": 7,
+      "moveDistance": 4
+    },
+    {
+      "name": "Bishop",
+      "damage": 4,
+      "health": 8,
+      "moveDistance": 4
+    },
+    {
+      "name": "Rook",
+      "damage": 5,
+      "health": 9,
+      "moveDistance": 4
+    },
+    {
+      "name": "Queen",
+      "damage": 6,
+      "health": 10,
+      "moveDistance": 4
+    }
+  ]
+}
