@@ -17,15 +17,11 @@ public class UnitsModel
         damage = unitDamage;
         moveDistance = unitMoveDistance;
         unitType = unitTypeEnum;
-        Start();
     }
 
     public void Start()
     {
-        Debug.Log(health + " health");
-        Debug.Log(damage + " damage");
-        Debug.Log(moveDistance + " moveDistance");
-        Debug.Log(unitType + " unitType");
+        
     }
 
     public void SetAUniteType(Enums.UniteType type)
