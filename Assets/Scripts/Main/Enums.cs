@@ -12,4 +12,10 @@ public class Enums
         Rook,
         Queen
     }
+
+    public enum PlayerType
+    {
+        Black,
+        White
+    }
 }
