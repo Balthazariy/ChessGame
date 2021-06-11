@@ -9,8 +9,7 @@ public class UniteController
 
     public GameObject unit;
     public List<UnitsModel> units;
-
-    private Vector3[,] _unitPosition;
+    
     private GameObject _groupBlackArmy, _groupWhiteArmy;
     private int currX = 0, currY = 0;
     private Vector2Int _currentHover;
@@ -44,6 +43,7 @@ public class UniteController
         if(currX < GridController.gridRows)
         {
             unit = Object.Instantiate(unitsModel.unitObject, new Vector3(_gameManager.gridController.tiles[currX, currY].transform.position.x, 0, _gameManager.gridController.tiles[currX, currY].transform.position.z), Quaternion.identity, _groupBlackArmy.transform);
+            unit.layer = LayerMask.NameToLayer("Unit");
             currX += 1;
         }
         if(currX >= GridController.gridRows)

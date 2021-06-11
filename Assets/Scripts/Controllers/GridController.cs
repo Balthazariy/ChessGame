@@ -7,8 +7,7 @@ public class GridController
     public const int gridRows = 25;
     public const int gridColumns = 25;
     private const int _tileSize = 3;
-
-    private GameManager _gameManager;
+    
     private GameObject _gridParent;
     private MeshRenderer _meshRenderer;
     public Material tileMaterial, howerTileMaterial;
@@ -24,8 +23,6 @@ public class GridController
 
     public void Start()
     {
-        _gameManager = Main.Instance.gameManager;
-
         tileMaterial = Resources.Load<Material>("Materials/TileMaterial");
         howerTileMaterial = Resources.Load<Material>("Materials/HowerTileMaterial");
         _tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");

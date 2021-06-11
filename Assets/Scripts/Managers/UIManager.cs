@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UIManager
 {
     private GameManager _gameManager;
+    
     private Canvas _canvas;
     private Button _marketBtn, _startGameBtn, _buyPawnBtn, _buyKnightBtn, _buyBishopBtn, _buyRookBtn, _buyQueenBtn;
     private Text _goldText;
@@ -15,7 +16,6 @@ public class UIManager
     {
         _canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         _groupMarket = _canvas.transform.Find("Group_Market").gameObject;
-
         _goldText = _groupMarket.transform.Find("Text_GoldAmount").GetComponent<Text>();
 
         _marketBtn = _canvas.transform.Find("Btn_Market").GetComponent<Button>();
@@ -25,10 +25,7 @@ public class UIManager
         _buyBishopBtn = _groupMarket.transform.Find("Group_Bishop/Btn_BuyBishop").GetComponent<Button>();
         _buyRookBtn = _groupMarket.transform.Find("Group_Rook/Btn_BuyRook").GetComponent<Button>();
         _buyQueenBtn = _groupMarket.transform.Find("Group_Queen/Btn_BuyQueen").GetComponent<Button>();
-
-
-
-
+        
         _marketBtn.onClick.AddListener(OpenMarket);
         _startGameBtn.onClick.AddListener(StartGame);
         _buyPawnBtn.onClick.AddListener(BuyPawn);
@@ -40,18 +37,14 @@ public class UIManager
 
     public void Start()
     {
-
         _gameManager = Main.Instance.gameManager;
-
         _groupMarket.SetActive(false);
         _startGameBtn.gameObject.SetActive(false);
-
-        _goldText.text = "Gold: " + _gameManager.gold.ToString();
     }
 
     public void Update()
     {
-        
+        _goldText.text = "Gold: " + _gameManager.gold.ToString();
     }
     
     private void OpenMarket()
@@ -60,7 +53,6 @@ public class UIManager
         _groupMarket.SetActive(true);
         _marketBtn.gameObject.SetActive(false);
         _startGameBtn.gameObject.SetActive(true);
-
     }
 
     private void StartGame()

@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class GameManager
 {
-    public GameObject _game;
     public GridController gridController;
-    public UniteController uniteController;
+    private UniteController _uniteController;
+    
+    public GameObject _groupGame;
     public Camera mainCamera;
     private Vector2Int _currentHover;
+
+    private Vector3 _mouseStartPos, _mouseEndPos;
 
     public int gold;
 
@@ -16,20 +19,18 @@ public class GameManager
 
     public GameManager()
     {
-        _game = GameObject.Find("Game").gameObject;
-
+        _groupGame = GameObject.Find("Game").gameObject;
+        gridController = new GridController(_groupGame);
+        _uniteController = new UniteController(_groupGame);
         mainCamera = Camera.main;
-        gridController = new GridController(_game);
-        uniteController = new UniteController(_game);
     }
 
     public void Start()
     {
         isGameStart = false;
         gold = 20;
-
         gridController.Start();
-        uniteController.Start();
+        _uniteController.Start();
     }
 
     public void Update()
@@ -45,7 +46,7 @@ public class GameManager
                 _currentHover = hitPosition;
                 gridController.tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
             }
-
+            
             if(_currentHover != hitPosition)
             {
                 gridController.tiles[_currentHover.x, _currentHover.y].layer = LayerMask.NameToLayer("Tile");
@@ -58,11 +59,20 @@ public class GameManager
             if(Input.GetMouseButtonDown(0))
             {
 
+                if (raycastHit.transform.position == _uniteController.unitsModel.unitObject.transform.position)
+                {
+                    Debug.Log("Its Unit");
+                    _mouseStartPos = _uniteController.unitsModel.unitObject.transform.position;
+                    Debug.Log(_mouseStartPos);
+                }
             }
 
             if(Input.GetMouseButtonUp(0))
             {
-
+                _mouseEndPos = raycastHit.transform.position;
+                
+                // _uniteController.unitsModel.unitObject.transform.Translate(_mouseEndPos);
+                // _uniteController.unitsModel.unitObject.transform.position = Vector3.Lerp(_mouseStartPos, _mouseEndPos, 0.25f);
             }
         }
         else
@@ -86,14 +96,14 @@ public class GameManager
 
     public void BuyAUnit(Enums.UniteType type)
     {
-        uniteController.SetUniteType(type);
-        if(uniteController.unitsModel.unitCost > gold) Debug.Log("Not enight money");
-        if(uniteController.unitsModel.unitCost <= gold) 
+        _uniteController.SetUniteType(type);
+        if(_uniteController.unitsModel.unitCost > gold) Debug.Log("Not enight money");
+        if(_uniteController.unitsModel.unitCost <= gold) 
         {
-            gold -= uniteController.unitsModel.unitCost;
-            Debug.Log("You spend: " + uniteController.unitsModel.unitCost);
+            gold -= _uniteController.unitsModel.unitCost;
+            Debug.Log("You spend: " + _uniteController.unitsModel.unitCost);
             Debug.Log(gold + "-------------");
-            uniteController.SpawnUnit(type);
+            _uniteController.SpawnUnit(type);
         }
     }
 }
