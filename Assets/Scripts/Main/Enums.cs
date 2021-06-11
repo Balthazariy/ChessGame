@@ -15,7 +15,7 @@ public class Enums
 
     public enum PlayerType
     {
-        Black,
-        White
+        BlackArmy,
+        WhiteArmy
     }
 }

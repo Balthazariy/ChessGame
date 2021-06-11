@@ -15,10 +15,10 @@ public class UnitsModel
     public Enums.UniteType unitType;
     public Enums.PlayerType playerType;
 
-    private int currentX;
-    private int currentY;
-    private Vector3 desirePosition;
-    private Vector3 desireScale;
+    public int currentX;
+    public int currentY;
+    public Vector3 desirePosition;
+    public Vector3 desireScale;
 
     public UnitsModel(int unitHealth, int unitDamage, int unitMoveDistance, int cost, Enums.UniteType unitTypeEnum, Enums.PlayerType playerTypeEnum)
     {

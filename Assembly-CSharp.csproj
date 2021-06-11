@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Main\UnitData.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\UIManager.cs" />
+    <Compile Include="Assets\Scripts\Models\BoardTileModel.cs" />
     <Compile Include="Assets\Scripts\Models\UnitsModel.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>E:/RomanFolders/Bananchess/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
