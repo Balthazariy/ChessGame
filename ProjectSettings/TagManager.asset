@@ -4,8 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Tile
-  - HoverTile
+  - SelectableUnit
+  - SelectableTile
   layers:
   - Default
   - TransparentFX
@@ -16,9 +16,9 @@ TagManager:
   - 
   - 
   - Tile
-  - Hover
-  - Unit
-  - SelectUnit
+  - AvailableTile
+  - EnemyUnit
+  - PlayerUnit
   - 
   - 
   - 

@@ -4,17 +4,14 @@ using UnityEngine;
 
 public class GridController
 {
-    public const int gridRows = 25;
-    public const int gridColumns = 25;
-    private const int _tileSize = 3;
-    
+    public const int gridRows = 25, gridColumns = 25;
+    private const int _tileSize = 1;
     private GameObject _gridParent;
-    private MeshRenderer _meshRenderer;
-    public Material tileMaterial, howerTileMaterial;
 
-    public GameObject tileObject;
+    private GameObject _tilePrefab, _singleTile;
     public GameObject[,] tiles;
-    private GameObject _tilePrefab;
+
+    private GameManager _gameManager;
 
     public GridController(GameObject parent)
     {
@@ -23,25 +20,21 @@ public class GridController
 
     public void Start()
     {
-        tileMaterial = Resources.Load<Material>("Materials/TileMaterial");
-        howerTileMaterial = Resources.Load<Material>("Materials/HowerTileMaterial");
+        _gameManager = Main.Instance.gameManager;
         _tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
-
-        _meshRenderer = _tilePrefab.GetComponent<MeshRenderer>();
-
-        GenerateTiles(_tileSize, gridRows, gridColumns);
+        tiles = new GameObject[gridRows, gridColumns];
+        GenerateTiles();
     }
 
-    public void GenerateTiles(int size, int rows, int columns)
+    public void GenerateTiles()
     {
-        tiles = new GameObject[rows, columns];
-        for(int i = 0; i < rows; i++)
+        for(int x = 0; x < gridRows; x++)
         {
-            for(int j = 0; j < columns; j++)
+            for(int y = 0; y < gridColumns; y++)
             {
-                tileObject = Object.Instantiate(_tilePrefab, new Vector3(i * size, 0, j * size), Quaternion.identity, _gridParent.transform);
-                _meshRenderer.material = tileMaterial;
-                tiles[i, j] = tileObject;
+                _singleTile = Object.Instantiate(_tilePrefab, new Vector3(x * _tileSize, 0, y * _tileSize), Quaternion.identity, _gridParent.transform);
+                _singleTile.layer = LayerMask.NameToLayer("Tile");
+                tiles[x, y] = _singleTile;
             }
         }
     }

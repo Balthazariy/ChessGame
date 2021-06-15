@@ -49,7 +49,6 @@ public class UIManager
     
     private void OpenMarket()
     {
-        Debug.Log("Market is open");
         _groupMarket.SetActive(true);
         _marketBtn.gameObject.SetActive(false);
         _startGameBtn.gameObject.SetActive(true);
@@ -57,38 +56,32 @@ public class UIManager
 
     private void StartGame()
     {
-        Debug.Log("Game is start now");
         _groupMarket.SetActive(false);
         _startGameBtn.gameObject.SetActive(false);
     }
 
     private void BuyPawn()
     {
-        Debug.Log("You are bought a Pawn now");
         _gameManager.BuyAUnit(Enums.UniteType.Pawn);
     }
 
     private void BuyKnight()
     {
-        Debug.Log("You are bought a Knight now");
         _gameManager.BuyAUnit(Enums.UniteType.Knight);
     }
 
     private void BuyBishop()
     {
-        Debug.Log("You are bought a Bishop now");
         _gameManager.BuyAUnit(Enums.UniteType.Bishop);
     }
 
     private void BuyRook()
     {
-        Debug.Log("You are bought a Rook now");
         _gameManager.BuyAUnit(Enums.UniteType.Rook);
     }
 
     private void BuyQueen()
     {
-        Debug.Log("You are bought a Queen now");
         _gameManager.BuyAUnit(Enums.UniteType.Queen);
     }
 }

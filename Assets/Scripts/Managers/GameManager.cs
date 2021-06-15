@@ -9,13 +9,12 @@ public class GameManager
     
     public GameObject _groupGame;
     public Camera mainCamera;
-    private Vector2Int _currentHover;
-
-    private Vector3 _mouseStartPos, _mouseEndPos;
-
     public int gold;
+    public bool isGameStart, isUniteSelected;
 
-    public bool isGameStart;
+    private Transform _selectionTile, _selectionUnit;
+    private Material _defaultTile, _highliteTile;
+    private GameObject selectedUnit;
 
     public GameManager()
     {
@@ -23,11 +22,14 @@ public class GameManager
         gridController = new GridController(_groupGame);
         _uniteController = new UniteController(_groupGame);
         mainCamera = Camera.main;
+        _defaultTile = Resources.Load<Material>("Materials/DefaultTileMat");
+        _highliteTile = Resources.Load<Material>("Materials/HighliteTileMat");
     }
 
     public void Start()
     {
         isGameStart = false;
+        isUniteSelected = false;
         gold = 20;
         gridController.Start();
         _uniteController.Start();
@@ -35,74 +37,73 @@ public class GameManager
 
     public void Update()
     {
-        RaycastHit raycastHit;
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if(Physics.Raycast(ray, out raycastHit, 100, LayerMask.GetMask("Tile", "Hover")))
+        UpdateTiles();
+        UpdateUnits();
+    }
+
+    public void UpdateTiles()
+    {
+        if(_selectionTile != null)
         {
-            Vector2Int hitPosition = LookUpTileIndex(raycastHit.transform.gameObject);
+            var selectionRender = _selectionTile.GetComponent<Renderer>();
+            selectionRender.material = _defaultTile;
+            _selectionTile = null;
+        }
 
-            if(_currentHover == Vector2Int.one * -1)
+        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("Tile")))
+        {
+            var selection = hit.transform;
+            var selectionRender = selection.GetComponent<Renderer>();
+            if(selectionRender != null)
             {
-                _currentHover = hitPosition;
-                gridController.tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
-            }
-            
-            if(_currentHover != hitPosition)
-            {
-                gridController.tiles[_currentHover.x, _currentHover.y].layer = LayerMask.NameToLayer("Tile");
-                gridController.tiles[_currentHover.x, _currentHover.y].GetComponent<MeshRenderer>().material = gridController.tileMaterial;
-                _currentHover = hitPosition;
-                gridController.tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
-                gridController.tiles[hitPosition.x, hitPosition.y].GetComponent<MeshRenderer>().material = gridController.howerTileMaterial;
-            }
-
-            if(Input.GetMouseButtonDown(0))
-            {
-
-                if (raycastHit.transform.position == _uniteController.unitsModel.unitObject.transform.position)
+                selectionRender.material = _highliteTile;
+                if(Input.GetMouseButtonDown(0))
                 {
-                    Debug.Log("Its Unit");
-                    _mouseStartPos = _uniteController.unitsModel.unitObject.transform.position;
-                    Debug.Log(_mouseStartPos);
+                    if(isUniteSelected)
+                    {
+                        selectedUnit.transform.position = new Vector3(selection.position.x, 0, selection.position.z);
+                        isUniteSelected = false;
+                        if(!isUniteSelected)
+                        {
+                            mainCamera.transform.position = new Vector3(12, 24, 11);
+                            mainCamera.transform.eulerAngles = new Vector3(90, 0, 0);
+                        }
+                    }
                 }
             }
-
-            if(Input.GetMouseButtonUp(0))
-            {
-                _mouseEndPos = raycastHit.transform.position;
-                
-                // _uniteController.unitsModel.unitObject.transform.Translate(_mouseEndPos);
-                // _uniteController.unitsModel.unitObject.transform.position = Vector3.Lerp(_mouseStartPos, _mouseEndPos, 0.25f);
-            }
-        }
-        else
-        {
-            if(_currentHover != Vector2Int.one * -1)
-            {
-                gridController.tiles[_currentHover.x, _currentHover.y].layer = LayerMask.NameToLayer("Tile");
-                _currentHover = Vector2Int.one * -1;
-            }
+            _selectionTile = selection;
         }
     }
 
-    public Vector2Int LookUpTileIndex(GameObject hitInfo)
+    public void UpdateUnits()
     {
-        for(int i = 0; i < GridController.gridRows; i++)
-            for(int j = 0; j < GridController.gridColumns; j++)
-                if(gridController.tiles[i, j] == hitInfo)
-                    return new Vector2Int(i, j);
-        return Vector2Int.one * -1;
+        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("PlayerUnit")))
+        {
+            var selection = hit.transform.gameObject;
+            var selectionRender = selection.GetComponent<Renderer>();
+            if(selectionRender != null)
+            {
+                if(Input.GetMouseButtonDown(0))
+                {
+                    selectedUnit = selection;
+                    mainCamera.transform.position = new Vector3(selectedUnit.transform.position.x, 10, selectedUnit.transform.position.z - 4);
+                    isUniteSelected = true;
+                }
+            }
+            _selectionUnit = selection.transform;
+        }
     }
 
     public void BuyAUnit(Enums.UniteType type)
     {
         _uniteController.SetUniteType(type);
-        if(_uniteController.unitsModel.unitCost > gold) Debug.Log("Not enight money");
         if(_uniteController.unitsModel.unitCost <= gold) 
         {
             gold -= _uniteController.unitsModel.unitCost;
-            Debug.Log("You spend: " + _uniteController.unitsModel.unitCost);
-            Debug.Log(gold + "-------------");
             _uniteController.SpawnUnit(type);
         }
     }

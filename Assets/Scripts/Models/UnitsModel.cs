@@ -6,7 +6,8 @@ public class UnitsModel
 {
     public GameObject unitObject;
     private MeshRenderer _meshRenderer;
-    private Material _material;
+    public Material defaultUnitMaterial;
+    public Sprite helthBar;
 
     public int health;
     public int damage;
@@ -18,6 +19,7 @@ public class UnitsModel
     public int currentX;
     public int currentY;
     public Vector3 desirePosition;
+    //public bool isInteractive;
 
     public UnitsModel(int unitHealth, int unitDamage, int unitMoveDistance, int cost, Enums.UniteType unitTypeEnum, Enums.PlayerType playerTypeEnum)
     {
@@ -27,9 +29,10 @@ public class UnitsModel
         unitCost = cost;
         unitType = unitTypeEnum;
         playerType = playerTypeEnum;
+        //isInteractive = interactive;
         unitObject = Resources.Load<GameObject>("Prefabs/" + unitTypeEnum);
-        _material = Resources.Load<Material>("Materials/" + playerTypeEnum);
+        defaultUnitMaterial = Resources.Load<Material>("Materials/" + playerTypeEnum);
         _meshRenderer = unitObject.GetComponent<MeshRenderer>();
-        _meshRenderer.material = _material;
+        _meshRenderer.material = defaultUnitMaterial;
     }
 }

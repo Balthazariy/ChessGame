@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 33017829115479750}
   - component: {fileID: 23471427938731296}
   - component: {fileID: 3147000231698854947}
-  m_Layer: 0
+  - component: {fileID: 6122536736776369751}
+  m_Layer: 11
   m_Name: Bishop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 95607dbe2e7c3481c90296c75fb23104, type: 2}
+  - {fileID: 2100000, guid: 4e0a16e7ff30642b8901637e8aea5b37, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,5 +91,17 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.9498559, y: 3.7877054, z: 1.900969}
-  m_Center: {x: -0.016804278, y: 1.8938477, z: 0.07090187}
+  m_Size: {x: 0.9, y: 0.2, z: 0.9}
+  m_Center: {x: 0, y: 0.15, z: 0}
+--- !u!114 &6122536736776369751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1916680518618882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aa8032373198954080459e32768750c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
