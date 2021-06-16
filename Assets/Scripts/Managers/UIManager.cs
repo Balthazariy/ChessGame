@@ -58,6 +58,7 @@ public class UIManager
     {
         _groupMarket.SetActive(false);
         _startGameBtn.gameObject.SetActive(false);
+        _gameManager.isGameStart = true;
     }
 
     private void BuyPawn()

@@ -16,10 +16,6 @@ public class UnitsModel
     public Enums.UniteType unitType;
     public Enums.PlayerType playerType;
 
-    public int currentX;
-    public int currentY;
-    public Vector3 desirePosition;
-    //public bool isInteractive;
 
     public UnitsModel(int unitHealth, int unitDamage, int unitMoveDistance, int cost, Enums.UniteType unitTypeEnum, Enums.PlayerType playerTypeEnum)
     {
@@ -29,10 +25,10 @@ public class UnitsModel
         unitCost = cost;
         unitType = unitTypeEnum;
         playerType = playerTypeEnum;
-        //isInteractive = interactive;
         unitObject = Resources.Load<GameObject>("Prefabs/" + unitTypeEnum);
         defaultUnitMaterial = Resources.Load<Material>("Materials/" + playerTypeEnum);
         _meshRenderer = unitObject.GetComponent<MeshRenderer>();
         _meshRenderer.material = defaultUnitMaterial;
+        helthBar = unitObject.transform.Find("Sprite_HealthBar").GetComponent<Sprite>();
     }
 }

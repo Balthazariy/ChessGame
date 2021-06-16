@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,102 +7,119 @@ public class GameManager
 {
     public GridController gridController;
     private UniteController _uniteController;
-    
-    public GameObject _groupGame;
+    public GameObject groupGame;
     public Camera mainCamera;
     public int gold;
-    public bool isGameStart, isUniteSelected;
+    public bool isGameStart, isUniteSelected, isEnemyTakeDamage;
 
-    private Transform _selectionTile, _selectionUnit;
-    private Material _defaultTile, _highliteTile;
-    private GameObject selectedUnit;
+    private Material _defaultTile, _highlightTile;
+    private Transform _selectionTile;
+    private GameObject _selectedPlayerUnit, _selectedEnemyUnit;
 
     public GameManager()
     {
-        _groupGame = GameObject.Find("Game").gameObject;
-        gridController = new GridController(_groupGame);
-        _uniteController = new UniteController(_groupGame);
+        groupGame = GameObject.Find("Game").gameObject;
+        gridController = new GridController(groupGame);
+        _uniteController = new UniteController(groupGame);
         mainCamera = Camera.main;
         _defaultTile = Resources.Load<Material>("Materials/DefaultTileMat");
-        _highliteTile = Resources.Load<Material>("Materials/HighliteTileMat");
+        _highlightTile = Resources.Load<Material>("Materials/HighlightTileMat");
     }
 
     public void Start()
     {
         isGameStart = false;
         isUniteSelected = false;
-        gold = 20;
+        isEnemyTakeDamage = false;
+        gold = 2000;
         gridController.Start();
         _uniteController.Start();
     }
 
     public void Update()
     {
-        UpdateTiles();
-        UpdateUnits();
+        if (isGameStart)
+        {
+            RaycastObjectsOnScene();
+        }
     }
 
-    public void UpdateTiles()
+    public void RaycastObjectsOnScene()
     {
-        if(_selectionTile != null)
+        int tempIndexOfTile = 0;
+        if (_selectionTile != null)
         {
-            var selectionRender = _selectionTile.GetComponent<Renderer>();
-            selectionRender.material = _defaultTile;
+            Renderer tileRenderer = _selectionTile.GetComponent<Renderer>();
+            tileRenderer.material = _defaultTile;
             _selectionTile = null;
         }
-
-        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if(Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("Tile")))
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("Tile")))
         {
-            var selection = hit.transform;
-            var selectionRender = selection.GetComponent<Renderer>();
-            if(selectionRender != null)
+            GameObject tileSelection = hit.transform.gameObject;
+            Renderer tileRenderer = tileSelection.GetComponent<Renderer>();
+            if (tileRenderer != null)
             {
-                selectionRender.material = _highliteTile;
-                if(Input.GetMouseButtonDown(0))
+                tempIndexOfTile = gridController.tilesPositions.IndexOf(tileSelection);
+                tileRenderer.material = _highlightTile;
+                if (Input.GetMouseButtonDown(0))
                 {
-                    if(isUniteSelected)
+                    if (isUniteSelected)
                     {
-                        selectedUnit.transform.position = new Vector3(selection.position.x, 0, selection.position.z);
                         isUniteSelected = false;
-                        if(!isUniteSelected)
+                        _selectedPlayerUnit.transform.position = new Vector3(tileSelection.transform.position.x, 0, tileSelection.transform.position.z);
+                        if (!isUniteSelected)
                         {
-                            mainCamera.transform.position = new Vector3(12, 24, 11);
-                            mainCamera.transform.eulerAngles = new Vector3(90, 0, 0);
+                            mainCamera.transform.position = new Vector3(12, 17, -1);
+                            mainCamera.transform.eulerAngles = new Vector3(60, 0, 0);
                         }
                     }
                 }
             }
-            _selectionTile = selection;
+            _selectionTile = tileSelection.transform;
         }
-    }
 
-    public void UpdateUnits()
-    {
-        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if(Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("PlayerUnit")))
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("PlayerUnit")))
         {
-            var selection = hit.transform.gameObject;
-            var selectionRender = selection.GetComponent<Renderer>();
-            if(selectionRender != null)
+            GameObject playerSelection = hit.transform.gameObject;
+            Renderer playerUnitRenderer = playerSelection.GetComponent<Renderer>();
+            if (playerUnitRenderer != null)
             {
-                if(Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0))
                 {
-                    selectedUnit = selection;
-                    mainCamera.transform.position = new Vector3(selectedUnit.transform.position.x, 10, selectedUnit.transform.position.z - 4);
+                    Enum.TryParse(_selectedPlayerUnit.name, out Enums.UniteType type);
+                    _uniteController.SetUniteType(type);
+                    mainCamera.transform.position = new Vector3(_selectedPlayerUnit.transform.position.x, 12, _selectedPlayerUnit.transform.position.z);
+                    mainCamera.transform.eulerAngles = new Vector3(90, 90, 0);
+                    gridController.indexOfTile = tempIndexOfTile;
                     isUniteSelected = true;
                 }
             }
-            _selectionUnit = selection.transform;
+            _selectedPlayerUnit = playerSelection;
+        }
+
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("EnemyUnit")))
+        {
+            GameObject enemySelection = hit.transform.gameObject;
+            Renderer enemyUnitRenderer = enemySelection.GetComponent<Renderer>();
+            if (enemyUnitRenderer != null)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Enum.TryParse(_selectedEnemyUnit.name, out Enums.UniteType type);
+                    _uniteController.SetUniteType(type);
+                    _uniteController.TakeDamage(_uniteController.unitsModel.damage, type);
+                }
+            }
+            _selectedEnemyUnit = enemySelection;
         }
     }
 
     public void BuyAUnit(Enums.UniteType type)
     {
         _uniteController.SetUniteType(type);
-        if(_uniteController.unitsModel.unitCost <= gold) 
+        if (_uniteController.unitsModel.unitCost <= gold)
         {
             gold -= _uniteController.unitsModel.unitCost;
             _uniteController.SpawnUnit(type);

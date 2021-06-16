@@ -9,10 +9,10 @@ public class UniteController
     public UnitsModel unitsModel;
 
     public GameObject singleUnit;
-    private List<UnitsModel> unitsList;
-    
+    public List<UnitsModel> unitsList;
+
     private GameObject _groupBlackArmy, _groupWhiteArmy;
-    private int currX = 0, currY = 0;
+    private int tileIndex = 0;
 
     public UniteController(GameObject game)
     {
@@ -36,16 +36,12 @@ public class UniteController
 
     public void SpawnUnit(Enums.UniteType type)
     {
-        if(currX < GridController.gridRows)
-        {
-            singleUnit = Object.Instantiate(unitsModel.unitObject, new Vector3(_gameManager.gridController.tiles[currX, currY].transform.position.x, 0, _gameManager.gridController.tiles[currX, currY].transform.position.z), Quaternion.identity, _groupBlackArmy.transform);
-            currX += 1;
-        }
-        if(currY >= GridController.gridRows)
-        {
-            currX = 0;
-            currY += 1;
-        }
+
+        singleUnit = Object.Instantiate(unitsModel.unitObject, new Vector3(_gameManager.gridController.tilesPositions[tileIndex].transform.position.x, 0,
+        _gameManager.gridController.tilesPositions[tileIndex].transform.position.z), Quaternion.identity, _groupBlackArmy.transform);
+
+        singleUnit.name = singleUnit.name.Replace("(Clone)", "");
+        tileIndex += 1;
     }
 
     public void SetUniteType(Enums.UniteType type)
@@ -56,5 +52,10 @@ public class UniteController
     private UnitsModel GetUnitDataByType(Enums.UniteType type)
     {
         return unitsList.Find(x => x.unitType == type);
+    }
+
+    public void TakeDamage(int damage, Enums.UniteType type)
+    {
+        Debug.Log("damage" + unitsModel.damage);
     }
 }
