@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 33643743512923556}
   - component: {fileID: 23947800390871528}
   - component: {fileID: 2310187702976166443}
-  - component: {fileID: -2770810820028910066}
   m_Layer: 11
   m_Name: Queen
   m_TagString: Untagged
@@ -94,18 +93,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.9, y: 0.2, z: 0.9}
   m_Center: {x: 0, y: 0.15, z: 0}
---- !u!114 &-2770810820028910066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1996616484037168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3aa8032373198954080459e32768750c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4385431840311218724
 PrefabInstance:
   m_ObjectHideFlags: 0

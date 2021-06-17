@@ -16,19 +16,17 @@ public class UnitsModel
     public Enums.UniteType unitType;
     public Enums.PlayerType playerType;
 
+    private UnitData _unitData;
 
-    public UnitsModel(int unitHealth, int unitDamage, int unitMoveDistance, int cost, Enums.UniteType unitTypeEnum, Enums.PlayerType playerTypeEnum)
+    public UnitsModel(UnitData unitData)
     {
-        health = unitHealth;
-        damage = unitDamage;
-        moveDistance = unitMoveDistance;
-        unitCost = cost;
-        unitType = unitTypeEnum;
-        playerType = playerTypeEnum;
-        unitObject = Resources.Load<GameObject>("Prefabs/" + unitTypeEnum);
-        defaultUnitMaterial = Resources.Load<Material>("Materials/" + playerTypeEnum);
-        _meshRenderer = unitObject.GetComponent<MeshRenderer>();
-        _meshRenderer.material = defaultUnitMaterial;
-        helthBar = unitObject.transform.Find("Sprite_HealthBar").GetComponent<Sprite>();
+        _unitData = unitData;
+        health = _unitData.health;
+        damage = _unitData.damage;
+        moveDistance = _unitData.moveDistance;
+        unitCost = _unitData.unitCost;
+        unitType = _unitData.unitType;
+        unitObject = Resources.Load<GameObject>("Prefabs/" + unitType);
+        // helthBar = unitObject.transform.Find("Sprite_HealthBar").GetComponent<Sprite>();
     }
 }

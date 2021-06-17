@@ -1,34 +1,39 @@
 {
   "Units": [
     {
-      "name": "Pawn",
+      "unitType": "Pawn",
       "damage": 2,
       "health": 6,
-      "moveDistance": 1
+      "moveDistance": 1,
+      "unitCost": 2
     },
     {
-      "name": "Knight",
+      "unitType": "Knight",
       "damage": 3,
       "health": 7,
-      "moveDistance": 4
+      "moveDistance": 4,
+      "unitCost": 5
     },
     {
-      "name": "Bishop",
+      "unitType": "Bishop",
       "damage": 4,
       "health": 8,
-      "moveDistance": 4
+      "moveDistance": 4,
+      "unitCost": 5
     },
     {
-      "name": "Rook",
+      "unitType": "Rook",
       "damage": 5,
       "health": 9,
-      "moveDistance": 4
+      "moveDistance": 4,
+      "unitCost": 8
     },
     {
-      "name": "Queen",
+      "unitType": "Queen",
       "damage": 6,
       "health": 10,
-      "moveDistance": 4
+      "moveDistance": 4,
+      "unitCost": 12
     }
   ]
 }
