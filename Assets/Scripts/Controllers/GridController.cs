@@ -79,11 +79,6 @@ public class GridController
                         _gameManager.uniteController.selectedPlayerUnit.transform.position = new Vector3(availableTileSelection.transform.position.x, 0, availableTileSelection.transform.position.z);
                     }
 
-                    // for (int i = 0; i < _highlight.Length; i++)
-                    // {
-                    //     // highlight[i].GetComponent<MeshRenderer>().material = _defaultTile;
-                    //     _highlight[i].layer = LayerMask.NameToLayer("Tile");
-                    // }
                     foreach (var item in _highlight)
                     {
                         item.GetComponent<MeshRenderer>().material = _defaultTile;
@@ -120,48 +115,30 @@ public class GridController
         {
             for (int j = 0; j <= moveDistance; j++)
             {
+                if (xPos - i < 0) xPos = 0;
+                if (xPos + i > 24) xPos = 24;
+                if (zPos - j < 0) zPos = 0;
+                if (zPos + j > 24) zPos = 24;
 
-                if (tilesPositions[xPos + i, zPos + j] != null)
+                if (xPos < 24 && zPos < 24)
                 {
-                    if (xPos - i < 0) xPos = 0;
-                    if (xPos + i > 25) xPos = 25;
-                    if (zPos - j < 0) zPos = 0;
-                    if (zPos + j > 25) zPos = 25;
                     _highlight.Add(tilesPositions[xPos + i, zPos + j]);
                 }
-                if (tilesPositions[xPos - i, zPos + j] != null)
+
+                if (xPos > 0 && zPos < 24)
                 {
-                    if (xPos - i < 0) xPos = 0;
-                    if (xPos + i > 25) xPos = 25;
-                    if (zPos - j < 0) zPos = 0;
-                    if (zPos + j > 25) zPos = 25;
-                    _highlight.Add(tilesPositions[xPos - i, zPos + j]); // BAG
+                    _highlight.Add(tilesPositions[xPos - i, zPos + j]);
                 }
-                if (tilesPositions[xPos + i, zPos - j] != null)
+
+                if (xPos < 24 && zPos > 0)
                 {
-                    if (xPos - i < 0) xPos = 0;
-                    if (xPos + i > 25) xPos = 25;
-                    if (zPos - j < 0) zPos = 0;
-                    if (zPos + j > 25) zPos = 25;
                     _highlight.Add(tilesPositions[xPos + i, zPos - j]); // BAG
                 }
-                if (tilesPositions[xPos - i, zPos - j] != null)
+
+                if (xPos > 0 && zPos > 0)
                 {
-                    if (xPos - i < 0) xPos = 0;
-                    if (xPos + i > 25) xPos = 25;
-                    if (zPos - j < 0) zPos = 0;
-                    if (zPos + j > 25) zPos = 25;
                     _highlight.Add(tilesPositions[xPos - i, zPos - j]); // BAG
                 }
-                // _highlight.Add(tilesPositions[xPos + i, zPos + j]);
-                // _highlight.Add(tilesPositions[xPos - i, zPos + j]); // BAG
-                // _highlight.Add(tilesPositions[xPos + i, zPos - j]); // BAG
-                // _highlight.Add(tilesPositions[xPos - i, zPos - j]); // BAG
-
-                // if (xPos - i < 0) xPos = 0;
-                // if (xPos + i > 25) xPos = 25;
-                // if (zPos - j < 0) zPos = 0;
-                // if (zPos + j > 25) zPos = 25;
             }
         }
 
