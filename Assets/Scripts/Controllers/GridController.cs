@@ -77,34 +77,39 @@ public class GridController
                 availableTileRenderer.material = _highlightAvailableTiles;
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (_unitController.selectedPlayerUnit.transform.position != availableTileSelection.transform.position)
+                    if (_unitController.selectedPlayerUnit.transform.position != _availableSelectionTile.position)
                     {
-                        for (int j = 0; j <= _unitController.playerUnits.Count - 1; j++)
-                        {
-                            if (_unitController.playerUnits[j].unitObject == _unitController.selectedPlayerUnit)
-                            {
-                                _unitController.selectedPlayerUnit.transform.position = new Vector3(availableTileSelection.transform.position.x, 0, availableTileSelection.transform.position.z);
-                                _unitController.playerUnits[j].isUnitCanMove = false;
-                            }
-                        }
-                    }
-                    else if (_unitController.selectedPlayerUnit.transform.position != availableTileSelection.transform.position)
 
-                        if (_unitController.isEnemySelected)
-                        {
-                            if (_unitController.selectedEnemyUnit.transform.position == availableTileSelection.transform.position)
-                            {
-                                for (int j = 0; j <= _unitController.playerUnits.Count - 1; j++)
-                                {
-                                    if (_unitController.playerUnits[j].unitObject == _unitController.selectedPlayerUnit)
-                                    {
-                                        _unitController.TakeDamage(_unitController.selectedPlayerUnit, _unitController.selectedEnemyUnit);
-                                        _unitController.playerUnits[j].isUnitCanMove = false;
-                                    }
-                                }
-                            }
-                        }
-                    HideAvailableTile();
+                    }
+
+                    // if (_unitController.selectedPlayerUnit.transform.position != availableTileSelection.transform.position)
+                    // {
+                    //     for (int j = 0; j <= _unitController.playerUnits.Count - 1; j++)
+                    //     {
+                    //         if (_unitController.playerUnits[j].unitObject == _unitController.selectedPlayerUnit)
+                    //         {
+                    //             _unitController.selectedPlayerUnit.transform.position = new Vector3(availableTileSelection.transform.position.x, 0, availableTileSelection.transform.position.z);
+                    //             _unitController.playerUnits[j].isUnitCanMove = false;
+                    //         }
+                    //     }
+                    // }
+                    // else if (_unitController.selectedPlayerUnit.transform.position != availableTileSelection.transform.position)
+                    // {
+                    //     if (_unitController.isEnemySelected)
+                    //     {
+                    //         if (_unitController.selectedEnemyUnit.transform.position == availableTileSelection.transform.position)
+                    //         {
+                    //             for (int j = 0; j <= _unitController.playerUnits.Count - 1; j++)
+                    //             {
+                    //                 if (_unitController.playerUnits[j].unitObject == _unitController.selectedPlayerUnit)
+                    //                 {
+                    //                     _unitController.TakeDamage(_unitController.selectedPlayerUnit, _unitController.selectedEnemyUnit);
+                    //                     _unitController.playerUnits[j].isUnitCanMove = false;
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 }
             }
         }

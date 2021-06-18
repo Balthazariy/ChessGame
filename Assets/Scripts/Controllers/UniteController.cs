@@ -15,7 +15,7 @@ public class UniteController
     private int _spawnPosForPlayer = 0, _spawnPosForEnemy = 0;
     public GameObject selectedPlayerUnit, selectedEnemyUnit;
     public List<UnitsModel> playerUnits, enemyUnits;
-    public bool isEnemySelected;
+    public bool isEnemySelected, isPlayerSelected;
 
     public UniteController(GameObject game, Data data)
     {
@@ -32,13 +32,68 @@ public class UniteController
         enemyUnits = new List<UnitsModel>();
 
         isEnemySelected = false;
+        isPlayerSelected = false;
 
         _spawnPosForEnemy = _gridController.tiles.Count - 1;
+
+
 
         SpawnEnemyUnit(Enums.UniteType.Queen);
     }
 
     public void Update()
+    {
+        //     Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
+        //     RaycastHit hit;
+
+        //     if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("BlackArmy")))
+        //     {
+        //         GameObject playerSelection = hit.transform.gameObject;
+        //         Renderer playerUnitRenderer = playerSelection.GetComponent<Renderer>();
+        //         if (playerUnitRenderer != null)
+        //         {
+        //             selectedPlayerUnit = playerSelection;
+        //             if (Input.GetMouseButtonDown(0))
+        //             {
+        //                 for (int i = 0; i <= playerUnits.Count - 1; i++)
+        //                 {
+        //                     if (playerUnits[i].unitObject == selectedPlayerUnit)
+        //                     {
+        //                         if (playerUnits[i].isUnitCanMove)
+        //                         {
+        //                             _gridController.HideAvailableTile();
+        //                             selectedPlayerUnit = playerUnits[i].unitObject;
+        //                             _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+
+        //     if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("WhiteArmy")))
+        //     {
+        //         GameObject enemySelection = hit.transform.gameObject;
+        //         Renderer enemyUnitRenderer = enemySelection.GetComponent<Renderer>();
+        //         if (enemyUnitRenderer != null)
+        //         {
+        //             selectedEnemyUnit = enemySelection;
+        //             if (Input.GetMouseButtonDown(0))
+        //             {
+        //                 for (int i = 0; i <= enemyUnits.Count - 1; i++)
+        //                 {
+        //                     if (playerUnits[i].unitObject == selectedEnemyUnit)
+        //                     {
+        //                         isEnemySelected = true;
+        //                         selectedEnemyUnit = enemyUnits[i].unitObject;
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+    }
+
+    public void SelectPlayerUnitEventHandler()
     {
         Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -50,23 +105,27 @@ public class UniteController
             if (playerUnitRenderer != null)
             {
                 selectedPlayerUnit = playerSelection;
-                if (Input.GetMouseButtonDown(0))
+                for (int i = 0; i <= playerUnits.Count - 1; i++)
                 {
-                    for (int i = 0; i <= playerUnits.Count - 1; i++)
+                    if (playerUnits[i].unitObject == selectedPlayerUnit)
                     {
-                        if (playerUnits[i].unitObject == selectedPlayerUnit)
+                        if (playerUnits[i].isUnitCanMove)
                         {
-                            if (playerUnits[i].isUnitCanMove)
-                            {
-                                _gridController.HideAvailableTile();
-                                selectedPlayerUnit = playerUnits[i].unitObject;
-                                _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
-                            }
+                            _gridController.HideAvailableTile();
+                            isPlayerSelected = true;
+                            selectedPlayerUnit = playerUnits[i].unitObject;
+                            _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
                         }
                     }
                 }
             }
         }
+    }
+
+    public void SelectEnemyForAtackEventHandler()
+    {
+        Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("WhiteArmy")))
         {
@@ -75,15 +134,12 @@ public class UniteController
             if (enemyUnitRenderer != null)
             {
                 selectedEnemyUnit = enemySelection;
-                if (Input.GetMouseButtonDown(0))
+                for (int i = 0; i <= enemyUnits.Count - 1; i++)
                 {
-                    for (int i = 0; i <= enemyUnits.Count - 1; i++)
+                    if (playerUnits[i].unitObject == selectedEnemyUnit)
                     {
-                        if (playerUnits[i].unitObject == selectedEnemyUnit)
-                        {
-                            isEnemySelected = true;
-                            selectedEnemyUnit = enemyUnits[i].unitObject;
-                        }
+                        isEnemySelected = true;
+                        selectedEnemyUnit = enemyUnits[i].unitObject;
                     }
                 }
             }

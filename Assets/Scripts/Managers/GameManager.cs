@@ -50,6 +50,10 @@ public class GameManager
 
     public void SetPlayer()
     {
-        Debug.Log("ChangePlayer");
+        for (int i = 0; i <= uniteController.playerUnits.Count - 1; i++)
+        {
+            uniteController.playerUnits[i].isUnitCanMove = true;
+        }
+        Main.Instance.uiManager.NewRound();
     }
 }
