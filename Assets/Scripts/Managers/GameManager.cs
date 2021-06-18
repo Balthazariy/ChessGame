@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class GameManager
 {
@@ -22,7 +23,7 @@ public class GameManager
     public void Start()
     {
         isGameStart = false;
-        gold = 20;
+        gold = 2000;
         gridController.Start();
         uniteController.Start();
     }
@@ -38,11 +39,17 @@ public class GameManager
 
     public void BuyAUnit(Enums.UniteType type)
     {
-        uniteController.SetUniteType(type);
+        uniteController.GetUnitCostByUnitType(type);
         if (uniteController.unitsModel.unitCost <= gold)
         {
             gold -= uniteController.unitsModel.unitCost;
-            uniteController.SpawnUnit(type);
+            // uniteController.SpawnEnemyUnit(type);
+            uniteController.SpawnPlayerUnit(type);
         }
+    }
+
+    public void SetPlayer()
+    {
+        Debug.Log("ChangePlayer");
     }
 }

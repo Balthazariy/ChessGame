@@ -79,12 +79,7 @@ public class GridController
                         _gameManager.uniteController.selectedPlayerUnit.transform.position = new Vector3(availableTileSelection.transform.position.x, 0, availableTileSelection.transform.position.z);
                     }
 
-                    foreach (var item in _highlight)
-                    {
-                        item.GetComponent<MeshRenderer>().material = _defaultTile;
-                        item.layer = LayerMask.NameToLayer("Tile");
-                    }
-                    _highlight.Clear();
+                    HideAvailableTile();
                 }
             }
             _availableSelectionTile = availableTileSelection.transform;
@@ -147,5 +142,15 @@ public class GridController
             item.GetComponent<MeshRenderer>().material = _defaultAvailableTiles;
             item.layer = LayerMask.NameToLayer("AvailableTile");
         }
+    }
+
+    public void HideAvailableTile()
+    {
+        foreach (var item in _highlight)
+        {
+            item.GetComponent<MeshRenderer>().material = _defaultTile;
+            item.layer = LayerMask.NameToLayer("Tile");
+        }
+        _highlight.Clear();
     }
 }
