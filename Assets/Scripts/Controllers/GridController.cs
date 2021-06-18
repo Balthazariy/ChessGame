@@ -9,14 +9,16 @@ public class GridController
     private const int _tileSize = 1;
     private GameObject _gridParent;
     private GameManager _gameManager;
+    private UniteController _unitController;
 
     private GameObject _tilePrefab, _singleTile;
-    public List<GameObject> tiles;
-    public GameObject[,] tilesPositions;
+    private GameObject[,] _tilesPositions;
 
     private Material _defaultTile, _highlightTile, _defaultAvailableTiles, _highlightAvailableTiles;
     private Transform _selectionTile, _availableSelectionTile;
     private List<GameObject> _highlight;
+
+    public List<GameObject> tiles;
 
     public GridController(GameObject parent)
     {
@@ -28,11 +30,12 @@ public class GridController
     public void Start()
     {
         _gameManager = Main.Instance.gameManager;
+        _unitController = Main.Instance.gameManager.uniteController;
         _tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
         _defaultAvailableTiles = Resources.Load<Material>("Materials/DefaultAvailableTilesMat");
         _highlightAvailableTiles = Resources.Load<Material>("Materials/HighliteAvailableTilesMat");
         tiles = new List<GameObject>();
-        tilesPositions = new GameObject[_gridRows, _gridColumns];
+        _tilesPositions = new GameObject[_gridRows, _gridColumns];
         _highlight = new List<GameObject>();
         GenerateTiles();
     }
@@ -70,19 +73,40 @@ public class GridController
             Renderer availableTileRenderer = availableTileSelection.GetComponent<Renderer>();
             if (availableTileRenderer != null)
             {
+                _availableSelectionTile = availableTileSelection.transform;
                 availableTileRenderer.material = _highlightAvailableTiles;
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (_gameManager.uniteController.isUniteSelected)
+                    if (_unitController.selectedPlayerUnit.transform.position != availableTileSelection.transform.position)
                     {
-                        _gameManager.uniteController.isUniteSelected = false;
-                        _gameManager.uniteController.selectedPlayerUnit.transform.position = new Vector3(availableTileSelection.transform.position.x, 0, availableTileSelection.transform.position.z);
+                        for (int j = 0; j <= _unitController.playerUnits.Count - 1; j++)
+                        {
+                            if (_unitController.playerUnits[j].unitObject == _unitController.selectedPlayerUnit)
+                            {
+                                _unitController.selectedPlayerUnit.transform.position = new Vector3(availableTileSelection.transform.position.x, 0, availableTileSelection.transform.position.z);
+                                _unitController.playerUnits[j].isUnitCanMove = false;
+                            }
+                        }
                     }
+                    else if (_unitController.selectedPlayerUnit.transform.position != availableTileSelection.transform.position)
 
+                        if (_unitController.isEnemySelected)
+                        {
+                            if (_unitController.selectedEnemyUnit.transform.position == availableTileSelection.transform.position)
+                            {
+                                for (int j = 0; j <= _unitController.playerUnits.Count - 1; j++)
+                                {
+                                    if (_unitController.playerUnits[j].unitObject == _unitController.selectedPlayerUnit)
+                                    {
+                                        _unitController.TakeDamage(_unitController.selectedPlayerUnit, _unitController.selectedEnemyUnit);
+                                        _unitController.playerUnits[j].isUnitCanMove = false;
+                                    }
+                                }
+                            }
+                        }
                     HideAvailableTile();
                 }
             }
-            _availableSelectionTile = availableTileSelection.transform;
         }
     }
 
@@ -96,7 +120,7 @@ public class GridController
                 _singleTile.layer = LayerMask.NameToLayer("Tile");
                 _singleTile.name = $"Tile X:{x} Y:{y}";
                 tiles.Add(_singleTile);
-                tilesPositions[x, y] = _singleTile;
+                _tilesPositions[x, y] = _singleTile;
             }
         }
     }
@@ -117,22 +141,22 @@ public class GridController
 
                 if (xPos < 24 && zPos < 24)
                 {
-                    _highlight.Add(tilesPositions[xPos + i, zPos + j]);
+                    _highlight.Add(_tilesPositions[xPos + i, zPos + j]);
                 }
 
                 if (xPos > 0 && zPos < 24)
                 {
-                    _highlight.Add(tilesPositions[xPos - i, zPos + j]);
+                    _highlight.Add(_tilesPositions[xPos - i, zPos + j]);
                 }
 
                 if (xPos < 24 && zPos > 0)
                 {
-                    _highlight.Add(tilesPositions[xPos + i, zPos - j]); // BAG
+                    _highlight.Add(_tilesPositions[xPos + i, zPos - j]); // BAG
                 }
 
                 if (xPos > 0 && zPos > 0)
                 {
-                    _highlight.Add(tilesPositions[xPos - i, zPos - j]); // BAG
+                    _highlight.Add(_tilesPositions[xPos - i, zPos - j]); // BAG
                 }
             }
         }

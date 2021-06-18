@@ -23,7 +23,7 @@ public class GameManager
     public void Start()
     {
         isGameStart = false;
-        gold = 2000;
+        gold = 20;
         gridController.Start();
         uniteController.Start();
     }

@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UnitsModel
 {
     public GameObject unitObject;
     public Material defaultUnitMaterial;
-    public Sprite helthBar;
+    public SpriteRenderer healthBar;
 
     public int health;
     public int damage;
@@ -16,6 +17,7 @@ public class UnitsModel
     public Enums.PlayerType playerType;
 
     private UnitData _unitData;
+    public bool isUnitCanMove;
 
     public UnitsModel(UnitData unitData, Vector3 possition, Transform parent, Enums.PlayerType playerTypeEnum)
     {
@@ -25,6 +27,7 @@ public class UnitsModel
         moveDistance = _unitData.moveDistance;
         unitType = _unitData.unitType;
         playerType = playerTypeEnum;
+        isUnitCanMove = true;
 
         unitObject = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/" + unitType), possition, Quaternion.identity, parent);
         unitObject.name = unitObject.name.Replace("(Clone)", "");
@@ -33,7 +36,10 @@ public class UnitsModel
         defaultUnitMaterial = Resources.Load<Material>("Materials/" + playerType);
 
         unitObject.GetComponent<MeshRenderer>().material = defaultUnitMaterial;
-        // helthBar = unitObject.transform.Find("Sprite_HealthBar").GetComponent<Sprite>();
+
+
+        healthBar = unitObject.transform.Find("Sprite_HealthBar").GetComponent<SpriteRenderer>();
+        healthBar.gameObject.transform.localScale = new Vector3(health, 1, 1);
 
     }
 
