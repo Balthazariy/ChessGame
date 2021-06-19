@@ -5,10 +5,10 @@ public class GameManager
 {
     public GridController gridController;
     public UniteController uniteController;
-    private GameObject _groupGame;
     public Camera mainCamera;
     public int gold;
     public bool isGameStart;
+    private GameObject _groupGame;
     private Data _unitData;
 
     public GameManager()

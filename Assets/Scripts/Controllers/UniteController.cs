@@ -28,6 +28,7 @@ public class UniteController
     {
         _gameManager = Main.Instance.gameManager;
         _gridController = Main.Instance.gameManager.gridController;
+
         playerUnits = new List<UnitsModel>();
         enemyUnits = new List<UnitsModel>();
 
@@ -35,62 +36,30 @@ public class UniteController
         isPlayerSelected = false;
 
         _spawnPosForEnemy = _gridController.tiles.Count - 1;
-
-
-
-        SpawnEnemyUnit(Enums.UniteType.Queen);
     }
 
     public void Update()
     {
-        //     Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
-        //     RaycastHit hit;
+        Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-        //     if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("BlackArmy")))
-        //     {
-        //         GameObject playerSelection = hit.transform.gameObject;
-        //         Renderer playerUnitRenderer = playerSelection.GetComponent<Renderer>();
-        //         if (playerUnitRenderer != null)
-        //         {
-        //             selectedPlayerUnit = playerSelection;
-        //             if (Input.GetMouseButtonDown(0))
-        //             {
-        //                 for (int i = 0; i <= playerUnits.Count - 1; i++)
-        //                 {
-        //                     if (playerUnits[i].unitObject == selectedPlayerUnit)
-        //                     {
-        //                         if (playerUnits[i].isUnitCanMove)
-        //                         {
-        //                             _gridController.HideAvailableTile();
-        //                             selectedPlayerUnit = playerUnits[i].unitObject;
-        //                             _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-
-        //     if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("WhiteArmy")))
-        //     {
-        //         GameObject enemySelection = hit.transform.gameObject;
-        //         Renderer enemyUnitRenderer = enemySelection.GetComponent<Renderer>();
-        //         if (enemyUnitRenderer != null)
-        //         {
-        //             selectedEnemyUnit = enemySelection;
-        //             if (Input.GetMouseButtonDown(0))
-        //             {
-        //                 for (int i = 0; i <= enemyUnits.Count - 1; i++)
-        //                 {
-        //                     if (playerUnits[i].unitObject == selectedEnemyUnit)
-        //                     {
-        //                         isEnemySelected = true;
-        //                         selectedEnemyUnit = enemyUnits[i].unitObject;
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
+        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("WhiteArmy")))
+        {
+            GameObject enemySelection = hit.transform.gameObject;
+            Renderer enemyUnitRenderer = enemySelection.GetComponent<Renderer>();
+            if (enemyUnitRenderer != null)
+            {
+                selectedEnemyUnit = enemySelection;
+                for (int i = 0; i <= enemyUnits.Count - 1; i++)
+                {
+                    if (enemyUnits[i].unitObject == selectedEnemyUnit)
+                    {
+                        isEnemySelected = true;
+                        selectedEnemyUnit = enemyUnits[i].unitObject;
+                    }
+                }
+            }
+        }
     }
 
     public void SelectPlayerUnitEventHandler()
@@ -105,6 +74,7 @@ public class UniteController
             if (playerUnitRenderer != null)
             {
                 selectedPlayerUnit = playerSelection;
+
                 for (int i = 0; i <= playerUnits.Count - 1; i++)
                 {
                     if (playerUnits[i].unitObject == selectedPlayerUnit)
@@ -116,30 +86,11 @@ public class UniteController
                             selectedPlayerUnit = playerUnits[i].unitObject;
                             _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
                         }
-                    }
-                }
-            }
-        }
-    }
-
-    public void SelectEnemyForAtackEventHandler()
-    {
-        Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("WhiteArmy")))
-        {
-            GameObject enemySelection = hit.transform.gameObject;
-            Renderer enemyUnitRenderer = enemySelection.GetComponent<Renderer>();
-            if (enemyUnitRenderer != null)
-            {
-                selectedEnemyUnit = enemySelection;
-                for (int i = 0; i <= enemyUnits.Count - 1; i++)
-                {
-                    if (playerUnits[i].unitObject == selectedEnemyUnit)
-                    {
-                        isEnemySelected = true;
-                        selectedEnemyUnit = enemyUnits[i].unitObject;
+                        else
+                        {
+                            _gridController.HideAvailableTile();
+                            isPlayerSelected = false;
+                        }
                     }
                 }
             }
@@ -148,8 +99,8 @@ public class UniteController
 
     public void SpawnPlayerUnit(Enums.UniteType type)
     {
-        Vector3 pos = new Vector3(_gameManager.gridController.tiles[_spawnPosForPlayer].transform.position.x, 0,
-                                    _gameManager.gridController.tiles[_spawnPosForPlayer].transform.position.z);
+        Vector3 pos = new Vector3(_gridController.tiles[_spawnPosForPlayer].transform.position.x, 0,
+                                    _gridController.tiles[_spawnPosForPlayer].transform.position.z);
 
         playerUnits.Add(new UnitsModel(_data.allUnits.Find(x => x.unitType == type), pos, _groupBlackArmy.transform, Enums.PlayerType.BlackArmy));
         _spawnPosForPlayer += 1;
@@ -157,8 +108,8 @@ public class UniteController
 
     public void SpawnEnemyUnit(Enums.UniteType type)
     {
-        Vector3 pos = new Vector3(_gameManager.gridController.tiles[75].transform.position.x, 0,
-                                    _gameManager.gridController.tiles[75].transform.position.z);
+        Vector3 pos = new Vector3(_gridController.tiles[_spawnPosForEnemy].transform.position.x, 0,
+                                    _gridController.tiles[_spawnPosForEnemy].transform.position.z);
 
         enemyUnits.Add(new UnitsModel(_data.allUnits.Find(x => x.unitType == type), pos, _groupWhiteArmy.transform, Enums.PlayerType.WhiteArmy));
         _spawnPosForEnemy -= 1;
@@ -169,7 +120,7 @@ public class UniteController
         unitsModel = new UnitsModel(_data.allUnits.Find(x => x.unitType == type));
     }
 
-    public void TakeDamage(GameObject attackingObject, GameObject targetObject)
+    public void TakeDamageToEnemy(GameObject attackingObject, GameObject targetObject)
     {
         for (int i = 0; i <= playerUnits.Count - 1; i++)
         {
@@ -184,6 +135,7 @@ public class UniteController
                         if (enemyUnits[j].health <= 0)
                         {
                             Disspose(enemyUnits[j].unitObject);
+                            enemyUnits.Remove(enemyUnits[j]);
                         }
                     }
                 }
@@ -191,7 +143,7 @@ public class UniteController
         }
     }
 
-    public void Disspose(GameObject unit)
+    private void Disspose(GameObject unit)
     {
         GameObject.Destroy(unit);
     }

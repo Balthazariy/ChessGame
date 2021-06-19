@@ -42,19 +42,16 @@ public class UnitsModel
         healthBar.gameObject.transform.localScale = new Vector3(health, 1, 1);
 
 
-        GetComponentByPlayerType(playerType);
+        GetComponentForPlayerUnits(playerType);
     }
 
-    private void GetComponentByPlayerType(Enums.PlayerType type)
+    private void GetComponentForPlayerUnits(Enums.PlayerType type)
     {
         if (type == Enums.PlayerType.BlackArmy)
             unitObject.GetComponent<MouseEventsArgs>().PlayerUnitSelectEvent += Main.Instance.gameManager.uniteController.SelectPlayerUnitEventHandler;
-
-        if (type == Enums.PlayerType.WhiteArmy)
-            unitObject.GetComponent<MouseEventsArgs>().EnemyUnitSelectEvent += Main.Instance.gameManager.uniteController.SelectEnemyForAtackEventHandler;
     }
 
-    public UnitsModel(UnitData unitData) // Constructor for getting unit Cost. Using [unitCost] in GameManager. Row - 34
+    public UnitsModel(UnitData unitData) // Constructor for getting unit Cost. Using [unitCost] in GameManager.
     {
         _unitData = unitData;
         unitCost = _unitData.unitCost;
