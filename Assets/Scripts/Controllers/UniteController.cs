@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class UniteController
@@ -40,10 +38,9 @@ public class UniteController
 
     public void Update()
     {
-        Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("WhiteArmy")))
+        if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("WhiteArmy")))
         {
             GameObject enemySelection = hit.transform.gameObject;
             Renderer enemyUnitRenderer = enemySelection.GetComponent<Renderer>();
@@ -64,10 +61,9 @@ public class UniteController
 
     public void SelectPlayerUnitEventHandler()
     {
-        Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("BlackArmy")))
+        if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("BlackArmy")))
         {
             GameObject playerSelection = hit.transform.gameObject;
             Renderer playerUnitRenderer = playerSelection.GetComponent<Renderer>();
@@ -143,7 +139,7 @@ public class UniteController
         }
     }
 
-    private void Disspose(GameObject unit)
+    private void Disspose(GameObject unit) // Destroy game object
     {
         GameObject.Destroy(unit);
     }

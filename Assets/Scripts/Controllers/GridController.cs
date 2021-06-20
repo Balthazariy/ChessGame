@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class GridController
@@ -51,9 +49,8 @@ public class GridController
             tileRenderer.material = _defaultTile;
             _selectionTile = null;
         }
-        Ray ray = _gameManager.mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("Tile")))
+        if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("Tile")))
         {
             GameObject tileSelection = hit.transform.gameObject;
             Renderer tileRenderer = tileSelection.GetComponent<Renderer>();
@@ -70,7 +67,7 @@ public class GridController
             availableTileRenderer.material = _defaultAvailableTiles;
             _availableSelectionTile = null;
         }
-        if (Physics.Raycast(ray, out hit, 100, LayerMask.GetMask("AvailableTile")))
+        if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("AvailableTile")))
         {
             GameObject availableTileSelection = hit.transform.gameObject;
             Renderer availableTileRenderer = availableTileSelection.GetComponent<Renderer>();
@@ -80,35 +77,32 @@ public class GridController
                 availableTileRenderer.material = _highlightAvailableTiles;
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (_unitController.isPlayerSelected)
+                    if (_unitController.isEnemySelected)
                     {
-                        if (_unitController.isEnemySelected)
+                        if (_unitController.enemyUnits.Count != 0)
                         {
-                            if (_unitController.enemyUnits.Count != 0)
+                            if (_unitController.selectedEnemyUnit.transform.position == _availableSelectionTile.transform.position)
                             {
-                                if (_unitController.selectedEnemyUnit.transform.position == _availableSelectionTile.transform.position)
+                                _unitController.TakeDamageToEnemy(_unitController.selectedPlayerUnit, _unitController.selectedEnemyUnit);
+                                foreach (var item in _unitController.playerUnits)
                                 {
-                                    _unitController.TakeDamageToEnemy(_unitController.selectedPlayerUnit, _unitController.selectedEnemyUnit);
-                                    foreach (var item in _unitController.playerUnits)
-                                    {
-                                        if (item.unitObject == _unitController.selectedPlayerUnit) item.isUnitCanMove = false;
-                                    }
-
-                                    HideAvailableTile();
-                                    return;
+                                    if (item.unitObject == _unitController.selectedPlayerUnit) item.isUnitCanMove = false;
                                 }
+
+                                HideAvailableTile();
+                                return;
                             }
                         }
-                        if (_unitController.selectedPlayerUnit.transform.position != _availableSelectionTile.transform.position)
+                    }
+                    if (_unitController.selectedPlayerUnit.transform.position != _availableSelectionTile.transform.position)
+                    {
+                        _unitController.selectedPlayerUnit.transform.position = new Vector3(_availableSelectionTile.transform.position.x, 0, _availableSelectionTile.transform.position.z);
+                        foreach (var item in _unitController.playerUnits)
                         {
-                            _unitController.selectedPlayerUnit.transform.position = new Vector3(_availableSelectionTile.transform.position.x, 0, _availableSelectionTile.transform.position.z);
-                            foreach (var item in _unitController.playerUnits)
-                            {
-                                if (item.unitObject == _unitController.selectedPlayerUnit) item.isUnitCanMove = false;
-                            }
-                            _unitController.isPlayerSelected = false;
-                            HideAvailableTile();
+                            if (item.unitObject == _unitController.selectedPlayerUnit) item.isUnitCanMove = false;
                         }
+                        _unitController.isPlayerSelected = false;
+                        HideAvailableTile();
                     }
                 }
             }
