@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UniteController
 {
+    public event Action newRoundEvent;
+
     private GameManager _gameManager;
     private GridController _gridController;
     public UnitsModel unitsModel;
@@ -47,7 +50,7 @@ public class UniteController
             if (enemyUnitRenderer != null)
             {
                 selectedEnemyUnit = enemySelection;
-                for (int i = 0; i <= enemyUnits.Count - 1; i++)
+                for (int i = 0; i < enemyUnits.Count; i++)
                 {
                     if (enemyUnits[i].unitObject == selectedEnemyUnit)
                     {
@@ -56,6 +59,11 @@ public class UniteController
                     }
                 }
             }
+        }
+
+        if (isPlayerSelected)
+        {
+            MovingOnHighlightingTiles();
         }
     }
 
@@ -66,29 +74,56 @@ public class UniteController
         if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("BlackArmy")))
         {
             GameObject playerSelection = hit.transform.gameObject;
-            Renderer playerUnitRenderer = playerSelection.GetComponent<Renderer>();
-            if (playerUnitRenderer != null)
-            {
-                selectedPlayerUnit = playerSelection;
+            selectedPlayerUnit = playerSelection;
 
-                for (int i = 0; i <= playerUnits.Count - 1; i++)
+            for (int i = 0; i < playerUnits.Count; i++)
+            {
+                if (playerUnits[i].unitObject == selectedPlayerUnit)
                 {
-                    if (playerUnits[i].unitObject == selectedPlayerUnit)
+                    if (playerUnits[i].isUnitCanMove)
                     {
-                        if (playerUnits[i].isUnitCanMove)
-                        {
-                            _gridController.HideAvailableTile();
-                            isPlayerSelected = true;
-                            selectedPlayerUnit = playerUnits[i].unitObject;
-                            _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
-                        }
-                        else
-                        {
-                            _gridController.HideAvailableTile();
-                            isPlayerSelected = false;
-                        }
+                        _gridController.HideAvailableTile();
+                        isPlayerSelected = true;
+                        selectedPlayerUnit = playerUnits[i].unitObject;
+                        _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
+                    }
+                    else
+                    {
+                        _gridController.HideAvailableTile();
+                        isPlayerSelected = false;
                     }
                 }
+            }
+        }
+    }
+
+    private void MovingOnHighlightingTiles()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (isEnemySelected && enemyUnits.Count != 0)
+            {
+                if (selectedEnemyUnit.transform.position == _gridController.availableSelectionTile.transform.position)
+                {
+                    TakeDamageToEnemy(selectedPlayerUnit, selectedEnemyUnit);
+                    foreach (var item in playerUnits)
+                    {
+                        if (item.unitObject == selectedPlayerUnit) item.isUnitCanMove = false;
+                    }
+                    isPlayerSelected = false;
+                    _gridController.HideAvailableTile();
+                    return;
+                }
+            }
+            if (selectedPlayerUnit.transform.position != _gridController.availableSelectionTile.transform.position)
+            {
+                selectedPlayerUnit.transform.position = new Vector3(_gridController.availableSelectionTile.transform.position.x, 0, _gridController.availableSelectionTile.transform.position.z);
+                foreach (var item in playerUnits)
+                {
+                    if (item.unitObject == selectedPlayerUnit) item.isUnitCanMove = false;
+                }
+                isPlayerSelected = false;
+                _gridController.HideAvailableTile();
             }
         }
     }
@@ -99,6 +134,10 @@ public class UniteController
                                     _gridController.tiles[_spawnPosForPlayer].transform.position.z);
 
         playerUnits.Add(new UnitsModel(_data.allUnits.Find(x => x.unitType == type), pos, _groupBlackArmy.transform, Enums.PlayerType.BlackArmy));
+        foreach (var item in playerUnits)
+        {
+            item.unitObject.GetComponent<MouseEventsArgs>().PlayerUnitSelectEvent += SelectPlayerUnitEventHandler;
+        }
         _spawnPosForPlayer += 1;
     }
 
@@ -111,18 +150,18 @@ public class UniteController
         _spawnPosForEnemy -= 1;
     }
 
-    public void GetUnitCostByUnitType(Enums.UniteType type)
+    public int GetUnitCostByUnitType(Enums.UniteType type)
     {
-        unitsModel = new UnitsModel(_data.allUnits.Find(x => x.unitType == type));
+        return _data.allUnits.Find(x => x.unitType == type).unitCost;
     }
 
     public void TakeDamageToEnemy(GameObject attackingObject, GameObject targetObject)
     {
-        for (int i = 0; i <= playerUnits.Count - 1; i++)
+        for (int i = 0; i < playerUnits.Count; i++)
         {
             if (playerUnits[i].unitObject == attackingObject)
             {
-                for (int j = 0; j <= enemyUnits.Count - 1; j++)
+                for (int j = 0; j < enemyUnits.Count; j++)
                 {
                     if (enemyUnits[j].unitObject == targetObject)
                     {
@@ -143,5 +182,14 @@ public class UniteController
     private void Disspose(GameObject unit) // Destroy game object
     {
         GameObject.Destroy(unit);
+    }
+
+    public void PlayNewRound()
+    {
+        for (int i = 0; i < playerUnits.Count; i++)
+        {
+            playerUnits[i].isUnitCanMove = true;
+        }
+        newRoundEvent?.Invoke();
     }
 }

@@ -27,7 +27,6 @@ public class UnitsModel
         isUnitCanMove = true;
 
         unitObject = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/" + _unitType), possition, Quaternion.identity, parent);
-        unitObject.name = unitObject.name.Replace("(Clone)", "");
         unitObject.layer = LayerMask.NameToLayer(_playerType.ToString());
 
         _defaultUnitMaterial = Resources.Load<Material>("Materials/" + _playerType);
@@ -37,15 +36,6 @@ public class UnitsModel
 
         healthBar = unitObject.transform.Find("Sprite_HealthBar").GetComponent<SpriteRenderer>();
         healthBar.gameObject.transform.localScale = new Vector3(health, 1, 1);
-
-
-        GetComponentForPlayerUnits(_playerType);
-    }
-
-    private void GetComponentForPlayerUnits(Enums.PlayerType type)
-    {
-        if (type == Enums.PlayerType.BlackArmy)
-            unitObject.GetComponent<MouseEventsArgs>().PlayerUnitSelectEvent += Main.Instance.gameManager.uniteController.SelectPlayerUnitEventHandler;
     }
 
     public UnitsModel(UnitData unitData) // Constructor for getting unit Cost. Using [unitCost] in GameManager.

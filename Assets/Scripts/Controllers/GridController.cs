@@ -11,12 +11,14 @@ public class GridController
     private UniteController _unitController;
 
     private GameObject _tilePrefab, _singleTile;
-    private Material _defaultTile, _highlightTile, _defaultAvailableTiles, _highlightAvailableTiles;
-    private Transform _selectionTile, _availableSelectionTile;
+    private Material _defaultTile, _highlightTile, _defaultAvailableTiles, _highlightAvailableTiles, _defaultLightTile, _defaultDarkTile;
+    private Transform _selectionTile;
+    public Transform availableSelectionTile;
 
     private GameObject[,] _tilesPositions;
     private List<GameObject> _highlight;
     public List<GameObject> tiles;
+    private bool _darkPiece;
 
     public GridController(GameObject parent)
     {
@@ -33,86 +35,86 @@ public class GridController
         _tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
         _defaultAvailableTiles = Resources.Load<Material>("Materials/DefaultAvailableTilesMat");
         _highlightAvailableTiles = Resources.Load<Material>("Materials/HighliteAvailableTilesMat");
+        _defaultLightTile = Resources.Load<Material>("Materials/DefaultLightMat");
+        _defaultDarkTile = Resources.Load<Material>("Materials/DefaultDarkMat");
 
         tiles = new List<GameObject>();
         _tilesPositions = new GameObject[_gridRows, _gridColumns];
         _highlight = new List<GameObject>();
+
+        _darkPiece = true;
 
         GenerateTiles();
     }
 
     public void Update()
     {
-        if (_selectionTile != null)
-        {
-            Renderer tileRenderer = _selectionTile.GetComponent<Renderer>();
-            tileRenderer.material = _defaultTile;
-            _selectionTile = null;
-        }
-        RaycastHit hit;
-        if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("Tile")))
-        {
-            GameObject tileSelection = hit.transform.gameObject;
-            Renderer tileRenderer = tileSelection.GetComponent<Renderer>();
-            if (tileRenderer != null)
-            {
-                tileRenderer.material = _highlightTile;
-            }
-            _selectionTile = tileSelection.transform;
-        }
+        // if (_selectionTile != null)
+        // {
+        //     Renderer tileRenderer = _selectionTile.GetComponent<Renderer>();
+        //     tileRenderer.material = _defaultTile;
+        //     _selectionTile = null;
+        // }
+        // RaycastHit hit;
+        // if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("Tile")))
+        // {
+        //     GameObject tileSelection = hit.transform.gameObject;
+        //     Renderer tileRenderer = tileSelection.GetComponent<Renderer>();
+        //     if (tileRenderer != null)
+        //     {
+        //         tileRenderer.material = _highlightTile;
+        //     }
+        //     _selectionTile = tileSelection.transform;
+        // }
 
-        if (_availableSelectionTile != null)
-        {
-            Renderer availableTileRenderer = _availableSelectionTile.GetComponent<Renderer>();
-            availableTileRenderer.material = _defaultAvailableTiles;
-            _availableSelectionTile = null;
-        }
-        if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("AvailableTile")))
-        {
-            GameObject availableTileSelection = hit.transform.gameObject;
-            Renderer availableTileRenderer = availableTileSelection.GetComponent<Renderer>();
-            if (availableTileRenderer != null)
-            {
-                _availableSelectionTile = availableTileSelection.transform;
-                availableTileRenderer.material = _highlightAvailableTiles;
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (_unitController.isEnemySelected && _unitController.enemyUnits.Count != 0)
-                    {
-                        if (_unitController.selectedEnemyUnit.transform.position == _availableSelectionTile.transform.position)
-                        {
-                            _unitController.TakeDamageToEnemy(_unitController.selectedPlayerUnit, _unitController.selectedEnemyUnit);
-                            foreach (var item in _unitController.playerUnits)
-                            {
-                                if (item.unitObject == _unitController.selectedPlayerUnit) item.isUnitCanMove = false;
-                            }
-                            _unitController.isPlayerSelected = false;
-                            HideAvailableTile();
-                            return;
-                        }
-                    }
-                    if (_unitController.selectedPlayerUnit.transform.position != _availableSelectionTile.transform.position)
-                    {
-                        _unitController.selectedPlayerUnit.transform.position = new Vector3(_availableSelectionTile.transform.position.x, 0, _availableSelectionTile.transform.position.z);
-                        foreach (var item in _unitController.playerUnits)
-                        {
-                            if (item.unitObject == _unitController.selectedPlayerUnit) item.isUnitCanMove = false;
-                        }
-                        _unitController.isPlayerSelected = false;
-                        HideAvailableTile();
-                    }
-                }
-            }
-        }
+        // if (availableSelectionTile != null)
+        // {
+        //     Renderer availableTileRenderer = availableSelectionTile.GetComponent<Renderer>();
+        //     availableTileRenderer.material = _defaultAvailableTiles;
+        //     availableSelectionTile = null;
+        // }
+        // if (Physics.Raycast(_gameManager.ray, out hit, 100, LayerMask.GetMask("AvailableTile")))
+        // {
+        //     GameObject availableTileSelection = hit.transform.gameObject;
+        //     Renderer availableTileRenderer = availableTileSelection.GetComponent<Renderer>();
+        //     if (availableTileRenderer != null)
+        //     {
+        //         availableSelectionTile = availableTileSelection.transform;
+        //         availableTileRenderer.material = _highlightAvailableTiles;
+        //     }
+        // }
     }
 
     private void GenerateTiles()
     {
+        // for (int x = 0; x < _gridRows; x++)
+        // {
+        //     for (int y = 0; y < _gridColumns; y++)
+        //     {
+        //         _singleTile = GameObject.Instantiate(_tilePrefab, new Vector3(x * _tileSize, 0, y * _tileSize), Quaternion.identity, _gridParent.transform);
+        //         _singleTile.layer = LayerMask.NameToLayer("Tile");
+        //         _singleTile.name = $"Tile X:{x} Y:{y}";
+        //         tiles.Add(_singleTile);
+        //         _tilesPositions[x, y] = _singleTile;
+        //     }
+        // }
+
         for (int x = 0; x < _gridRows; x++)
         {
             for (int y = 0; y < _gridColumns; y++)
             {
-                _singleTile = GameObject.Instantiate(_tilePrefab, new Vector3(x * _tileSize, 0, y * _tileSize), Quaternion.identity, _gridParent.transform);
+                if (_darkPiece)
+                {
+                    _singleTile = GameObject.Instantiate(_tilePrefab, new Vector3(x * _tileSize, 0, y * _tileSize), Quaternion.identity, _gridParent.transform);
+                    _singleTile.GetComponent<Renderer>().material = _defaultDarkTile;
+                    _darkPiece = false;
+                }
+                else
+                {
+                    _singleTile = GameObject.Instantiate(_tilePrefab, new Vector3(x * _tileSize, 0, y * _tileSize), Quaternion.identity, _gridParent.transform);
+                    _singleTile.GetComponent<Renderer>().material = _defaultLightTile;
+                    _darkPiece = true;
+                }
                 _singleTile.layer = LayerMask.NameToLayer("Tile");
                 _singleTile.name = $"Tile X:{x} Y:{y}";
                 tiles.Add(_singleTile);

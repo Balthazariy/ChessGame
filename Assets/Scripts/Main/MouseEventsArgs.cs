@@ -8,6 +8,5 @@ public class MouseEventsArgs : MonoBehaviour
     private void OnMouseDown()
     {
         PlayerUnitSelectEvent?.Invoke();
-
     }
 }
