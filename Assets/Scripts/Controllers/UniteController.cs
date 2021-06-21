@@ -132,6 +132,7 @@ public class UniteController
                         {
                             Disspose(enemyUnits[j].unitObject);
                             enemyUnits.Remove(enemyUnits[j]);
+                            isEnemySelected = false;
                         }
                     }
                 }

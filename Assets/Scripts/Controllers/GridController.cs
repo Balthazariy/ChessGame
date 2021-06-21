@@ -77,21 +77,18 @@ public class GridController
                 availableTileRenderer.material = _highlightAvailableTiles;
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (_unitController.isEnemySelected)
+                    if (_unitController.isEnemySelected && _unitController.enemyUnits.Count != 0)
                     {
-                        if (_unitController.enemyUnits.Count != 0)
+                        if (_unitController.selectedEnemyUnit.transform.position == _availableSelectionTile.transform.position)
                         {
-                            if (_unitController.selectedEnemyUnit.transform.position == _availableSelectionTile.transform.position)
+                            _unitController.TakeDamageToEnemy(_unitController.selectedPlayerUnit, _unitController.selectedEnemyUnit);
+                            foreach (var item in _unitController.playerUnits)
                             {
-                                _unitController.TakeDamageToEnemy(_unitController.selectedPlayerUnit, _unitController.selectedEnemyUnit);
-                                foreach (var item in _unitController.playerUnits)
-                                {
-                                    if (item.unitObject == _unitController.selectedPlayerUnit) item.isUnitCanMove = false;
-                                }
-
-                                HideAvailableTile();
-                                return;
+                                if (item.unitObject == _unitController.selectedPlayerUnit) item.isUnitCanMove = false;
                             }
+                            _unitController.isPlayerSelected = false;
+                            HideAvailableTile();
+                            return;
                         }
                     }
                     if (_unitController.selectedPlayerUnit.transform.position != _availableSelectionTile.transform.position)
@@ -133,17 +130,17 @@ public class GridController
         {
             for (int j = 0; j <= moveDistance; j++)
             {
-                if (xPos + i <= 24 && zPos + j <= 24)
+                if (xPos + i < _gridRows && zPos + j < _gridColumns)
                 {
                     _highlight.Add(_tilesPositions[xPos + i, zPos + j]);
                 }
 
-                if (xPos - i >= 0 && zPos + j <= 24)
+                if (xPos - i >= 0 && zPos + j < _gridColumns)
                 {
                     _highlight.Add(_tilesPositions[xPos - i, zPos + j]);
                 }
 
-                if (xPos + i <= 24 && zPos - j >= 0)
+                if (xPos + i < _gridRows && zPos - j >= 0)
                 {
                     _highlight.Add(_tilesPositions[xPos + i, zPos - j]); // BAG
                 }
