@@ -85,7 +85,7 @@ public class UniteController
                         _gridController.HideAvailableTile();
                         isPlayerSelected = true;
                         selectedPlayerUnit = playerUnits[i].unitObject;
-                        _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
+                        // _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
                     }
                     else
                     {
