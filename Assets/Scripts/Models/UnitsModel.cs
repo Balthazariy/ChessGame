@@ -10,7 +10,7 @@ public class UnitsModel
     public int damage;
     public int moveDistance;
     public int unitCost;
-    private Enums.UniteType _unitType;
+    public Enums.UniteType unitType;
     private Enums.PlayerType _playerType;
 
     private UnitData _unitData;
@@ -22,11 +22,12 @@ public class UnitsModel
         health = _unitData.health;
         damage = _unitData.damage;
         moveDistance = _unitData.moveDistance;
-        _unitType = _unitData.unitType;
+        unitType = _unitData.unitType;
         _playerType = playerTypeEnum;
         isUnitCanMove = true;
 
-        unitObject = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/" + _unitType), possition, Quaternion.identity, parent);
+        unitObject = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/" + unitType), possition, Quaternion.identity, parent);
+        unitObject.name = unitObject.name.Replace("(Clone)", "");
         unitObject.layer = LayerMask.NameToLayer(_playerType.ToString());
 
         _defaultUnitMaterial = Resources.Load<Material>("Materials/" + _playerType);
@@ -36,6 +37,15 @@ public class UnitsModel
 
         healthBar = unitObject.transform.Find("Sprite_HealthBar").GetComponent<SpriteRenderer>();
         healthBar.gameObject.transform.localScale = new Vector3(health, 1, 1);
+
+
+        GetComponentForPlayerUnits(_playerType);
+    }
+
+    private void GetComponentForPlayerUnits(Enums.PlayerType type)
+    {
+        if (type == Enums.PlayerType.BlackArmy)
+            unitObject.GetComponent<MouseEventsArgs>().PlayerUnitSelectEvent += Main.Instance.gameManager.uniteController.SelectPlayerUnitEventHandler;
     }
 
     public UnitsModel(UnitData unitData) // Constructor for getting unit Cost. Using [unitCost] in GameManager.

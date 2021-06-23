@@ -6,10 +6,9 @@ public class UIManager
     private GameManager _gameManager;
 
     private Canvas _canvas;
-    private Button _openMarketButton, _closeMarketButton, _finishPreparingButton, _spawnNewEnemyButton, _buyPawnButton, _buyKnightButton, _buyBishopButton, _buyRookButton, _buyQueenButton;
-    private Text _goldText, _pawnCost, _knightCost, _bishopCost, _rookCost, _queenCost;
+    private Button _openMarketBtn, _closeMarketBtn, _finishPreparingBtn, _spawnNewEnemyBtn, _buyPawnBtn, _buyKnightBtn, _buyBishopBtn, _buyRookBtn, _buyQueenBtn;
+    private Text _goldText;
     private GameObject _groupMarket;
-    private Data _data;
 
     public UIManager()
     {
@@ -17,52 +16,37 @@ public class UIManager
         _groupMarket = _canvas.transform.Find("Group_Market").gameObject;
         _goldText = _groupMarket.transform.Find("Text_GoldAmount").GetComponent<Text>();
 
-        _openMarketButton = _canvas.transform.Find("Button_Market").GetComponent<Button>();
-        _closeMarketButton = _canvas.transform.Find("Button_CloseMarket").GetComponent<Button>();
-        _finishPreparingButton = _canvas.transform.Find("Button_FinishPreparing").GetComponent<Button>();
-        _spawnNewEnemyButton = _canvas.transform.Find("Button_SpawnNewEnemy").GetComponent<Button>();
+        _openMarketBtn = _canvas.transform.Find("Btn_Market").GetComponent<Button>();
+        _closeMarketBtn = _canvas.transform.Find("Btn_CloseMarket").GetComponent<Button>();
+        _finishPreparingBtn = _canvas.transform.Find("Btn_FinishPreparing").GetComponent<Button>();
+        _spawnNewEnemyBtn = _canvas.transform.Find("Btn_SpawnNewEnemy").GetComponent<Button>();
 
-        _buyPawnButton = _groupMarket.transform.Find("Group_Pawn/Button_BuyPawn").GetComponent<Button>();
-        _buyKnightButton = _groupMarket.transform.Find("Group_Knight/Button_BuyKnight").GetComponent<Button>();
-        _buyBishopButton = _groupMarket.transform.Find("Group_Bishop/Button_BuyBishop").GetComponent<Button>();
-        _buyRookButton = _groupMarket.transform.Find("Group_Rook/Button_BuyRook").GetComponent<Button>();
-        _buyQueenButton = _groupMarket.transform.Find("Group_Queen/Button_BuyQueen").GetComponent<Button>();
+        _buyPawnBtn = _groupMarket.transform.Find("Group_Pawn/Btn_BuyPawn").GetComponent<Button>();
+        _buyKnightBtn = _groupMarket.transform.Find("Group_Knight/Btn_BuyKnight").GetComponent<Button>();
+        _buyBishopBtn = _groupMarket.transform.Find("Group_Bishop/Btn_BuyBishop").GetComponent<Button>();
+        _buyRookBtn = _groupMarket.transform.Find("Group_Rook/Btn_BuyRook").GetComponent<Button>();
+        _buyQueenBtn = _groupMarket.transform.Find("Group_Queen/Btn_BuyQueen").GetComponent<Button>();
 
-        _pawnCost = _buyPawnButton.transform.Find("Text_PawnCost").GetComponent<Text>();
-        _knightCost = _buyKnightButton.transform.Find("Text_KnightCost").GetComponent<Text>();
-        _bishopCost = _buyBishopButton.transform.Find("Text_BishopCost").GetComponent<Text>();
-        _rookCost = _buyRookButton.transform.Find("Text_RookCost").GetComponent<Text>();
-        _queenCost = _buyQueenButton.transform.Find("Text_QueenCost").GetComponent<Text>();
+        _openMarketBtn.onClick.AddListener(OpenMarket);
+        _closeMarketBtn.onClick.AddListener(CloseMarket);
+        _finishPreparingBtn.onClick.AddListener(StartGame);
+        _spawnNewEnemyBtn.onClick.AddListener(SpawnNewEnemy);
 
-        _openMarketButton.onClick.AddListener(OpenMarket);
-        _closeMarketButton.onClick.AddListener(CloseMarket);
-        _finishPreparingButton.onClick.AddListener(StartGame);
-        _spawnNewEnemyButton.onClick.AddListener(SpawnNewEnemy);
-
-        _buyPawnButton.onClick.AddListener(BuyPawn);
-        _buyKnightButton.onClick.AddListener(BuyKnight);
-        _buyBishopButton.onClick.AddListener(BuyBishop);
-        _buyRookButton.onClick.AddListener(BuyRook);
-        _buyQueenButton.onClick.AddListener(BuyQueen);
+        _buyPawnBtn.onClick.AddListener(BuyPawn);
+        _buyKnightBtn.onClick.AddListener(BuyKnight);
+        _buyBishopBtn.onClick.AddListener(BuyBishop);
+        _buyRookBtn.onClick.AddListener(BuyRook);
+        _buyQueenBtn.onClick.AddListener(BuyQueen);
     }
 
     public void Start()
     {
         _gameManager = Main.Instance.gameManager;
-        _data = _gameManager.unitData;
         _groupMarket.SetActive(false);
-        _closeMarketButton.gameObject.SetActive(false);
-        _finishPreparingButton.gameObject.SetActive(false);
-        _openMarketButton.gameObject.SetActive(true);
-        _spawnNewEnemyButton.gameObject.SetActive(false);
-
-        _pawnCost.text = "Cost: " + _gameManager.uniteController.GetUnitCostByUnitType(Enums.UniteType.Pawn).ToString() + "g";
-        _knightCost.text = "Cost: " + _gameManager.uniteController.GetUnitCostByUnitType(Enums.UniteType.Knight).ToString() + "g";
-        _bishopCost.text = "Cost: " + _gameManager.uniteController.GetUnitCostByUnitType(Enums.UniteType.Bishop).ToString() + "g";
-        _rookCost.text = "Cost: " + _gameManager.uniteController.GetUnitCostByUnitType(Enums.UniteType.Rook).ToString() + "g";
-        _queenCost.text = "Cost: " + _gameManager.uniteController.GetUnitCostByUnitType(Enums.UniteType.Queen).ToString() + "g";
-
-        _gameManager.uniteController.newRoundEvent += NewRound;
+        _closeMarketBtn.gameObject.SetActive(false);
+        _finishPreparingBtn.gameObject.SetActive(false);
+        _openMarketBtn.gameObject.SetActive(true);
+        _spawnNewEnemyBtn.gameObject.SetActive(false);
     }
 
     public void Update()
@@ -73,23 +57,23 @@ public class UIManager
     private void OpenMarket()
     {
         _groupMarket.SetActive(true);
-        _openMarketButton.gameObject.SetActive(false);
-        _closeMarketButton.gameObject.SetActive(true);
+        _openMarketBtn.gameObject.SetActive(false);
+        _closeMarketBtn.gameObject.SetActive(true);
     }
 
     private void CloseMarket()
     {
         _groupMarket.SetActive(false);
-        _closeMarketButton.gameObject.SetActive(false);
-        _finishPreparingButton.gameObject.SetActive(true);
+        _closeMarketBtn.gameObject.SetActive(false);
+        _finishPreparingBtn.gameObject.SetActive(true);
         _gameManager.isGameStart = true;
-        _spawnNewEnemyButton.gameObject.SetActive(true);
+        _spawnNewEnemyBtn.gameObject.SetActive(true);
     }
 
     private void StartGame()
     {
-        _finishPreparingButton.gameObject.SetActive(false);
-        _gameManager.uniteController.PlayNewRound();
+        _finishPreparingBtn.gameObject.SetActive(false);
+        _gameManager.PlayNewRound();
     }
 
     private void BuyPawn()
@@ -117,9 +101,9 @@ public class UIManager
         _gameManager.BuyAUnit(Enums.UniteType.Queen);
     }
 
-    private void NewRound()
+    public void NewRound()
     {
-        _finishPreparingButton.gameObject.SetActive(true);
+        _finishPreparingBtn.gameObject.SetActive(true);
         Debug.Log("New Round");
     }
 

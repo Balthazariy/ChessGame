@@ -118,11 +118,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sprite_HealthBar
       objectReference: {fileID: 0}
-    - target: {fileID: 1812130978709398464, guid: 423785b900c2575499148a4de4f14335,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3016009171078195927, guid: 423785b900c2575499148a4de4f14335,
         type: 3}
       propertyPath: m_LocalPosition.x
