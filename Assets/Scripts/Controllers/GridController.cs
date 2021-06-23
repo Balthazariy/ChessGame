@@ -24,7 +24,7 @@ public class GridController
     private MeshRenderer _meshRenderer;
 
 
-    public List<TileModel> gridCells;
+    // public List<TileModel> gridCells;
 
 
 
@@ -51,7 +51,7 @@ public class GridController
         _tilePos = new GameObject[_gridRows, _gridColumns];
         highlight = new List<GameObject>();
         _tileMaterials = new List<Material>();
-        gridCells = new List<TileModel>();
+        // gridCells = new List<TileModel>();
 
         GenerateTiles();
 

@@ -61,10 +61,10 @@ public class UniteController
             }
         }
 
-        if (isPlayerSelected)
-        {
-            MovingOnHighlightingTiles();
-        }
+        // if (isPlayerSelected)
+        // {
+        //     MovingOnHighlightingTiles();
+        // }
     }
 
     public void SelectPlayerUnitEventHandler()
@@ -85,7 +85,11 @@ public class UniteController
                         _gridController.HideAvailableTile();
                         isPlayerSelected = true;
                         selectedPlayerUnit = playerUnits[i].unitObject;
-                        _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance);
+                        _gridController.HighlightAvailableTiles(selectedPlayerUnit.transform.position, playerUnits[i].moveDistance, playerUnits[i].unitType);
+
+                        _gameManager.mainCamera.transform.position = new Vector3(selectedPlayerUnit.transform.position.x - 7, 8, selectedPlayerUnit.transform.position.z);
+                        _gameManager.mainCamera.transform.eulerAngles = new Vector3(45, 90, 0);
+
                     }
                     else
                     {
@@ -97,35 +101,42 @@ public class UniteController
         }
     }
 
-    private void MovingOnHighlightingTiles()
+    public void AtackEnemyEventHandler()
     {
-        if (Input.GetMouseButtonDown(0))
+        // if (isEnemySelected && enemyUnits.Count != 0)
+        // {
+        // if (selectedEnemyUnit.transform.position != _gridController.availableTileSelection.transform.position)
+        // {
+        TakeDamageToEnemy(selectedPlayerUnit, selectedEnemyUnit);
+        foreach (var item in playerUnits)
         {
-            if (isEnemySelected && enemyUnits.Count != 0)
-            {
-                if (selectedEnemyUnit.transform.position == _gridController.availableSelectionTile.transform.position)
-                {
-                    TakeDamageToEnemy(selectedPlayerUnit, selectedEnemyUnit);
-                    foreach (var item in playerUnits)
-                    {
-                        if (item.unitObject == selectedPlayerUnit) item.isUnitCanMove = false;
-                    }
-                    isPlayerSelected = false;
-                    _gridController.HideAvailableTile();
-                    return;
-                }
-            }
-            if (selectedPlayerUnit.transform.position != _gridController.availableSelectionTile.transform.position)
-            {
-                selectedPlayerUnit.transform.position = new Vector3(_gridController.availableSelectionTile.transform.position.x, 0, _gridController.availableSelectionTile.transform.position.z);
-                foreach (var item in playerUnits)
-                {
-                    if (item.unitObject == selectedPlayerUnit) item.isUnitCanMove = false;
-                }
-                isPlayerSelected = false;
-                _gridController.HideAvailableTile();
-            }
+            if (item.unitObject == selectedPlayerUnit) item.isUnitCanMove = false;
         }
+        isPlayerSelected = false;
+        isEnemySelected = false;
+        _gridController.HideAvailableTile();
+        Debug.Log("1");
+        // return;
+        // }
+        // }
+    }
+
+    public void MovingOnHighlightingTiles()
+    {
+        // if (Input.GetMouseButtonDown(0))
+        // {
+
+        if (selectedPlayerUnit.transform.position != _gridController.availableTileSelection.transform.position)
+        {
+            selectedPlayerUnit.transform.position = new Vector3(_gridController.availableTileSelection.transform.position.x, 0, _gridController.availableTileSelection.transform.position.z);
+            foreach (var item in playerUnits)
+            {
+                if (item.unitObject == selectedPlayerUnit) item.isUnitCanMove = false;
+            }
+            isPlayerSelected = false;
+            _gridController.HideAvailableTile();
+        }
+        // }
     }
 
     public void SpawnPlayerUnit(Enums.UniteType type)
@@ -147,6 +158,10 @@ public class UniteController
                                     _gridController.tiles[_spawnPosForEnemy].transform.position.z);
 
         enemyUnits.Add(new UnitsModel(_data.allUnits.Find(x => x.unitType == type), pos, _groupWhiteArmy.transform, Enums.PlayerType.WhiteArmy));
+        foreach (var item in enemyUnits)
+        {
+            item.unitObject.GetComponent<MouseEventsArgs>().EnemySelectAndAtackEvent += AtackEnemyEventHandler;
+        }
         _spawnPosForEnemy -= 1;
     }
 
