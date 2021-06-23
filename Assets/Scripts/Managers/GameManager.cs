@@ -2,11 +2,9 @@
 
 public class GameManager
 {
-
-
     public GridController gridController;
     public UniteController uniteController;
-    private Camera _mainCamera;
+    public Camera mainCamera;
     public int gold;
     public bool isGameStart;
     private GameObject _groupGame;
@@ -20,7 +18,7 @@ public class GameManager
         _groupGame = GameObject.Find("Game").gameObject;
         gridController = new GridController(_groupGame);
         uniteController = new UniteController(_groupGame, unitData);
-        _mainCamera = Camera.main;
+        mainCamera = Camera.main;
     }
 
     public void Start()
@@ -36,8 +34,7 @@ public class GameManager
         if (isGameStart)
         {
             gridController.Update();
-            uniteController.Update();
-            ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+            ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         }
     }
 

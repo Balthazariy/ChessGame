@@ -10,7 +10,7 @@ public class UnitsModel
     public int damage;
     public int moveDistance;
     public int unitCost;
-    private Enums.UniteType _unitType;
+    public Enums.UniteType unitType;
     private Enums.PlayerType _playerType;
 
     private UnitData _unitData;
@@ -22,11 +22,11 @@ public class UnitsModel
         health = _unitData.health;
         damage = _unitData.damage;
         moveDistance = _unitData.moveDistance;
-        _unitType = _unitData.unitType;
+        unitType = _unitData.unitType;
         _playerType = playerTypeEnum;
         isUnitCanMove = true;
 
-        unitObject = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/" + _unitType), possition, Quaternion.identity, parent);
+        unitObject = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/" + unitType), possition, Quaternion.identity, parent);
         unitObject.layer = LayerMask.NameToLayer(_playerType.ToString());
 
         _defaultUnitMaterial = Resources.Load<Material>("Materials/" + _playerType);
